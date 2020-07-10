@@ -40,6 +40,33 @@ const renderPage = (num) => {
   });
 };
 
+// check for pages rendering
+const queueRenderpage = (num) => {
+  if (pageIsRendering) {
+    pageNumIsPending = num;
+  } else {
+    renderPage(num);
+  }
+};
+
+// Check for prev page
+const showPrevPage = () => {
+  if (pageNum <= 1) {
+    return;
+  }
+  pageNum--;
+  queueRenderpage(pageNum);
+};
+
+// Check for Next page
+const showNextPage = () => {
+  if (pageNum >= pdfDoc.numPages) {
+    return;
+  }
+  pageNum++;
+  queueRenderpage(pageNum);
+};
+
 //Get the document
 
 pdfjsLib.getDocument(url).promise.then((pdfDoc_) => {
@@ -47,3 +74,7 @@ pdfjsLib.getDocument(url).promise.then((pdfDoc_) => {
   document.querySelector("#page-count").textContent = pdfDoc.numPages;
   renderPage(pageNum);
 });
+
+// Button events
+document.querySelector("#prev-page").addEventListener("click", showPrevPage);
+document.querySelector("#next-page").addEventListener("click", showNextPage);
